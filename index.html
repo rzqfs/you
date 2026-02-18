@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Story for Windi Yulianti</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            overflow: hidden; /* Dikunci saat intro, akan dibuka lewat JS */
+            transition: background 2s;
+        }
+
+        /* ===== CINEMATIC STARS ===== */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            background: radial-gradient(ellipse at bottom, #0d1b2a 0%, #000000 100%);
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: moveStars linear infinite;
+        }
+
+        @keyframes moveStars {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100vh); }
+        }
+
+        .shooting-star {
+            position: fixed;
+            top: 25%;
+            left: -200px;
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,1), transparent);
+            animation: shoot 7s infinite;
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0) rotate(20deg); opacity: 0; }
+            5% { opacity: 1; }
+            15% { transform: translateX(120vw) translateY(200px) rotate(20deg); opacity: 0; }
+            100% { transform: translateX(120vw) translateY(200px) rotate(20deg); opacity: 0; }
+        }
+
+        /* ===== INTRO SCENE ===== */
+        #intro {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .intro-text {
+            opacity: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.2rem, 5vw, 2rem);
+            margin-bottom: 15px;
+            transform: translateY(20px);
+        }
+
+        .fade-in-text {
+            animation: fadeText 4s forwards;
+        }
+
+        @keyframes fadeText {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #continue {
+            margin-top: 50px;
+            opacity: 0;
+            cursor: pointer;
+            letter-spacing: 4px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+            transition: 0.5s;
+        }
+
+        #continue:hover {
+            color: #fff;
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .show-btn {
+            animation: fadeText 2s forwards;
+        }
+
+        /* ===== TRANSITION ===== */
+        .fade-out {
+            animation: fadeOut 2s forwards;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        #main {
+            display: none;
+            padding: 80px 20px;
+            text-align: center;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: 40px; /* Ditambah margin karena countdown dihapus */
+            color: #fff;
+        }
+
+        .message {
+            max-width: 700px;
+            margin: auto;
+            line-height: 2;
+            font-size: 1.05rem;
+            font-weight: 300;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: justify;
+        }
+
+        /* ===== GALLERY ===== */
+        .gallery {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 80px 0;
+            flex-wrap: wrap;
+        }
+
+        .gallery-item {
+            width: 260px;
+            height: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.5s;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05) translateY(-10px);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* ===== QUESTION ===== */
+        .question {
+            margin-top: 80px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 50px 20px;
+            border-radius: 30px;
+        }
+
+        input {
+            padding: 15px 25px;
+            width: 100%;
+            max-width: 350px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: transparent;
+            color: white;
+            text-align: center;
+            margin-top: 30px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #fff;
+        }
+
+        button {
+            padding: 12px 40px;
+            margin-top: 25px;
+            border-radius: 30px;
+            border: none;
+            background: white;
+            color: black;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ffd700;
+            transform: scale(1.1);
+        }
+
+        #sent {
+            margin-top: 25px;
+            opacity: 0;
+            color: #ffd700;
+            font-style: italic;
+            transition: 1s;
+        }
+
+        #sent.show {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            margin-top: 100px;
+            padding-bottom: 50px;
+            opacity: 0.4;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="stars-container" id="starField"></div>
+    <div class="shooting-star"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mp3">
+    </audio>
+
+    <section id="intro">
+        <div class="intro-text" id="t1">On 1 July 2026...</div>
+        <div class="intro-text" id="t2">A girl turns 20.</div>
+        <div class="intro-text" id="t3">And someone still loves her quietly.</div>
+        <div id="continue" onclick="startMain()">TAP TO CONTINUE ✨</div>
+    </section>
+
+    <section id="main">
+        <h1>Happy 20th Birthday, Windi Yulianti 🤍</h1>
+
+        <div class="message">
+            <p>
+                Happy birthday my wine! 🎂 <br><br>
+                Jika kamu baca pesan ini di tanggal 1 July 2026 artinya kamu menginjak usia 20 tahun. Waktu terasa berjalan begitu cepat ya? Sepertinya baru kemarin kita berbagi cerita, dan sekarang kamu sudah berada di gerbang kedewasaan yang baru.
+                <br><br>
+                Semoga di usia 20 ini, setiap langkahmu selalu dijaga, setiap doamu segera menemukan aminnya, dan setiap lelahmu selalu terbayar dengan bahagia. Aku ingin kamu tahu bahwa di belahan dunia manapun kamu berada, ada seseorang yang selalu mendoakan hal-hal baik untukmu.
+                <br><br>
+                Terima kasih sudah menjadi sosok yang hebat. Teruslah bersinar seperti bintang yang kita lihat malam ini. Aku akan selalu ada di sini, entah sebagai apapun itu, untuk merayakan setiap pencapaianmu.
+                <br><br>
+                I love you more than words can say. All the best for you, Windi. ✨
+            </p>
+        </div>
+
+        <div class="gallery">
+            <div class="gallery-item"><img src="foto1.jpg" onerror="this.src='https://via.placeholder.com/260x350/111/fff?text=Our+Memory+1'"></div>
+            <div class="gallery-item"><img src="foto2.jpg" onerror="this.src='https://via.placeholder.com/260x350/111/fff?text=Our+Memory+2'"></div>
+            <div class="gallery-item"><img src="foto3.jpg" onerror="this.src='https://via.placeholder.com/260x350/111/fff?text=Our+Memory+3'"></div>
+        </div>
+
+        <div class="question">
+            <p>Di usia 20 ini, apa impian terbesar yang ingin kamu wujudkan bersama? 🌙</p>
+            <input type="text" id="wishInput" placeholder="Tulis harapanmu...">
+            <br>
+            <button onclick="sendMessage()">Kirim Harapan 💫</button>
+            <div id="sent">Pesanmu melesat seperti bintang jatuh ✨</div>
+        </div>
+
+        <footer>
+            made with ❤️ for windi yulianti
+        </footer>
+    </section>
+
+    <script>
+        // Star Background Generation
+        const starField = document.getElementById('starField');
+        const starCount = 120;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2 + 1 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.animationDuration = (Math.random() * 50 + 50) + 's';
+            star.style.opacity = Math.random();
+            starField.appendChild(star);
+        }
+
+        // Intro Sequences
+        setTimeout(() => document.getElementById('t1').classList.add('fade-in-text'), 1000);
+        setTimeout(() => document.getElementById('t2').classList.add('fade-in-text'), 4000);
+        setTimeout(() => document.getElementById('t3').classList.add('fade-in-text'), 7000);
+        setTimeout(() => document.getElementById('continue').classList.add('show-btn'), 10000);
+
+        function startMain(){
+            // Play music on click
+            const music = document.getElementById("bgMusic");
+            music.play().catch(e => console.log("Music play blocked."));
+
+            document.getElementById("intro").classList.add("fade-out");
+            setTimeout(() => {
+                document.getElementById("intro").style.display = "none";
+                document.getElementById("main").style.display = "block";
+                document.body.style.overflow = "auto";
+                window.scrollTo(0, 0);
+            }, 2000);
+        }
+
+        function sendMessage(){
+            const input = document.getElementById("wishInput");
+            if(input.value.trim() !== "") {
+                document.getElementById("sent").classList.add("show");
+                input.disabled = true;
+                document.querySelector(".question button").style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
